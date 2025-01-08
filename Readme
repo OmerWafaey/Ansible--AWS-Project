@@ -1,64 +1,46 @@
-# 🌟 WordPress Deployment with Ansible 🚀
-
-Welcome to the **WordPress Deployment with Ansible** project! 🎉 This setup is your go-to solution for automating the provisioning of EC2 instances, installing WordPress, configuring MySQL, and managing the entire lifecycle of your EC2 instances with ease. 
+🌟 WordPress Deployment with Ansible 🚀
+Welcome to the WordPress Deployment with Ansible project! 🎉 This setup is your go-to solution for automating the provisioning of EC2 instances, installing WordPress, configuring MySQL, and managing the entire lifecycle of your EC2 instances with ease.
 
 No manual configurations, no headaches—just pure automation magic! ✨
 
----
+🚀 Project Highlights
+✅ Fully Automated EC2 Provisioning
+Creates an EC2 instance of type t3.small with Ubuntu 22.04. 🌐
+Prints the public IP of the EC2 instance as a clickable WordPress URL! 🔗
+✅ WordPress Installation
+Installs WordPress with all the necessary configurations. 🖥️
+Configures Apache and PHP extensions for optimal performance. 📜
+✅ MySQL 8 with Automatic Backups
+Sets up MySQL 8, creates the WordPress database, and ensures secure configurations. 🔒
+Includes a daily cron job to back up all databases. 🕒
+✅ EC2 Lifecycle Management
+Stop, start, or delete your EC2 instances using predefined roles or tags. 🔄
+💡 Why Choose This Setup?
+Time-Saving: Fully automated, reducing deployment time from hours to minutes. ⏳
+Scalable: Modular roles for flexibility—reuse them on any infrastructure. 🛠️
+Secure: Enforces best practices, such as backup automation and variable management. 🔐
+Easy Management: Use lifecycle commands to control your EC2 instances effortlessly. 🖱️
+📋 What's Inside?
+🎭 Roles Breakdown
+EC2 Role 🌐
 
-## 🚀 **Project Highlights**
+Provisions a t3.small EC2 instance with Ubuntu 22.04.
+Handles networking, security groups, and printing the instance URL.
+WordPress Role 🖥️
 
-### ✅ **Fully Automated EC2 Provisioning**
-   - Creates an EC2 instance of type `t3.small` with **Ubuntu 22.04**. 🌐
-   - Prints the public IP of the EC2 instance as a clickable WordPress URL! 🔗
+Installs WordPress, Apache, PHP, and required extensions.
+Configures Apache to serve the WordPress site with best practices.
+MySQL Role 📊
 
-### ✅ **WordPress Installation**
-   - Installs WordPress with all the necessary configurations. 🖥️
-   - Configures Apache and PHP extensions for optimal performance. 📜
+Installs MySQL 8 and creates a dedicated WordPress database.
+Configures a daily backup cron job for database security.
+EC2 Lifecycle Role 🔄
 
-### ✅ **MySQL 8 with Automatic Backups**
-   - Sets up MySQL 8, creates the WordPress database, and ensures secure configurations. 🔒
-   - Includes a **daily cron job** to back up all databases. 🕒
-
-### ✅ **EC2 Lifecycle Management**
-   - Stop, start, or delete your EC2 instances using predefined roles or tags. 🔄
-
----
-
-## 💡 **Why Choose This Setup?**
-
-1. **Time-Saving**: Fully automated, reducing deployment time from hours to minutes. ⏳
-2. **Scalable**: Modular roles for flexibility—reuse them on any infrastructure. 🛠️
-3. **Secure**: Enforces best practices, such as backup automation and variable management. 🔐
-4. **Easy Management**: Use lifecycle commands to control your EC2 instances effortlessly. 🖱️
-
----
-
-## 📋 **What's Inside?**
-
-### 🎭 **Roles Breakdown**
-
-1. **EC2 Role** 🌐
-   - Provisions a t3.small EC2 instance with Ubuntu 22.04.
-   - Handles networking, security groups, and printing the instance URL.
-
-2. **WordPress Role** 🖥️
-   - Installs WordPress, Apache, PHP, and required extensions.
-   - Configures Apache to serve the WordPress site with best practices.
-
-3. **MySQL Role** 📊
-   - Installs MySQL 8 and creates a dedicated WordPress database.
-   - Configures a **daily backup cron job** for database security.
-
-4. **EC2 Lifecycle Role** 🔄
-   - Provides tasks to **start**, **stop**, or **delete** the EC2 instance.
-   - Can be executed independently using tags.
-
----
-
-### 📂 **Project Structure**
-
-```plaintext
+Provides tasks to start, stop, or delete the EC2 instance.
+Can be executed independently using tags.
+📂 Project Structure
+plaintext
+Copy code
 .
 ├── ansible.cfg                # Configuration file for Ansible
 ├── override_vars.yml          # Variable overrides for roles
@@ -68,76 +50,54 @@ No manual configurations, no headaches—just pure automation magic! ✨
 │   ├── wordpress             # WordPress installation and configuration
 │   ├── mysql                 # MySQL installation and backups
 │   └── ec2_lifecycle         # EC2 instance lifecycle management
-```
+🚦 Getting Started
+🔧 Prerequisites
+Install Ansible:
+bash
+Copy code
+sudo apt update
+sudo apt install ansible -y
+Install the AWS Ansible collection:
+bash
+Copy code
+ansible-galaxy collection install amazon.aws
+Configure your AWS credentials using the AWS CLI:
+bash
+Copy code
+aws configure
+📜 How to Use
+Run the Full Playbook: 🖥️
 
----
+bash
+Copy code
+ansible-playbook wordpress.yml -e "@override_vars.yml"
+This provisions an EC2 instance, sets up WordPress, and configures MySQL.
 
-## 🚦 **Getting Started**
+Manage EC2 Lifecycle: 🔄
 
-### 🔧 **Prerequisites**
-
-1. Install **Ansible**:
-   ```bash
-   sudo apt update
-   sudo apt install ansible -y
-   ```
-2. Install the AWS Ansible collection:
-   ```bash
-   ansible-galaxy collection install amazon.aws
-   ```
-3. Configure your AWS credentials using the AWS CLI:
-   ```bash
-   aws configure
-   ```
-
----
-
-### 📜 **How to Use**
-
-1. **Run the Full Playbook**: 🖥️
-   ```bash
-   ansible-playbook wordpress.yml -e "@override_vars.yml"
-   ```
-   This provisions an EC2 instance, sets up WordPress, and configures MySQL.
-
-2. **Manage EC2 Lifecycle**: 🔄
-   - Stop the instance:
-     ```bash
-     ansible-playbook wordpress.yml --tags stop
-     ```
-   - Start the instance:
-     ```bash
-     ansible-playbook wordpress.yml --tags start
-     ```
-   - Delete the instance:
-     ```bash
-     ansible-playbook wordpress.yml --tags delete
-     ```
-
----
-
-## 🎯 **Acceptance Test**
-
-1. ✅ **EC2 Role** provisions an instance and prints a working WordPress URL.
-2. ✅ **MySQL Role** and **WordPress Role** are modular—can run independently on different machines.
-3. ✅ **Lifecycle Management** operates via tags or dedicated roles.
-
----
-
-## 🔒 **Security Notes**
-
-- Sensitive data (e.g., AWS credentials) is excluded from the repository.
-- Make sure to manage secrets using Ansible Vault or environment variables. 🔐
-
----
-
-## 🤝 **Contributing**
-
+Stop the instance:
+bash
+Copy code
+ansible-playbook wordpress.yml --tags stop
+Start the instance:
+bash
+Copy code
+ansible-playbook wordpress.yml --tags start
+Delete the instance:
+bash
+Copy code
+ansible-playbook wordpress.yml --tags delete
+🎯 Acceptance Test
+✅ EC2 Role provisions an instance and prints a working WordPress URL.
+✅ MySQL Role and WordPress Role are modular—can run independently on different machines.
+✅ Lifecycle Management operates via tags or dedicated roles.
+🔒 Security Notes
+Sensitive data (e.g., AWS credentials) is excluded from the repository.
+Make sure to manage secrets using Ansible Vault or environment variables. 🔐
+🤝 Contributing
 Contributions are welcome! Fork this repository, submit pull requests, or open issues for feature requests or bug reports. 🚀
 
----
-
-## 🌟 **Happy Automating!**
+🌟 Happy Automating!
 Deploying WordPress has never been easier. This project is designed to make your life simpler and more productive. ❤️
 
 Enjoy your new WordPress site in just a few clicks! 🌐
