@@ -1,0 +1,158 @@
+# WordPress Deployment with Ansible
+
+This project includes a complete Ansible setup to provision an EC2 instance, install WordPress, configure MySQL, and manage the lifecycle of the EC2 instance.
+
+---
+
+## Features
+
+1. **EC2 Role**: Provisions a t3.small EC2 instance with Ubuntu 22.04 OS.
+2. **WordPress Role**: Installs and configures WordPress with all necessary dependencies.
+3. **MySQL Role**: Installs MySQL 8, sets up the database for WordPress, and configures a daily backup using a cron job.
+4. **EC2 Lifecycle Role**: Provides tasks to start, stop, and delete the EC2 instance.
+5. **Unified Playbook**: A single playbook, `wordpress.yml`, orchestrates all roles.
+
+---
+
+## Roles and Their Details
+
+### 1. EC2 Role (`roles/ec2`)
+
+- **Purpose**: Creates an EC2 instance of type t3.small running Ubuntu 22.04.
+- **Tasks**:
+  - Provision EC2 instance.
+  - Print the public IP address of the EC2 instance as a URL.
+- **Variables**:
+  - Instance type, OS details, and AWS region.
+
+### 2. WordPress Role (`roles/wordpress`)
+
+- **Purpose**: Installs and configures WordPress.
+- **Tasks**:
+  - Install Apache.
+  - Install PHP and required extensions.
+  - Deploy WordPress files.
+  - Configure Apache for WordPress.
+- **Variables**:
+  - WordPress repository URL, database credentials.
+
+### 3. MySQL Role (`roles/mysql`)
+
+- **Purpose**: Installs MySQL 8 and configures it for WordPress.
+- **Tasks**:
+  - Install MySQL 8.
+  - Create the WordPress database and user.
+  - Set up a daily cron job for database backups.
+- **Variables**:
+  - Database name, user, and backup location.
+
+### 4. EC2 Lifecycle Role (`roles/ec2_lifecycle`)
+
+- **Purpose**: Manages the EC2 instance lifecycle.
+- **Tasks**:
+  - Start the EC2 instance.
+  - Stop the EC2 instance.
+  - Delete the EC2 instance.
+- **Variables**:
+  - Instance ID.
+
+---
+
+## Playbook: `wordpress.yml`
+
+This playbook ties together all roles.
+
+### Structure
+```yaml
+---
+- name: Provision and Configure WordPress on EC2
+  hosts: localhost
+  roles:
+    - ec2
+    - wordpress
+    - mysql
+
+- name: Manage EC2 Lifecycle
+  hosts: localhost
+  roles:
+    - ec2_lifecycle
+```
+
+---
+
+## Usage
+
+### 1. Prerequisites
+- Install Ansible.
+- Install the AWS Ansible collection:
+  ```bash
+  ansible-galaxy collection install amazon.aws
+  ```
+- Configure AWS credentials using the AWS CLI:
+  ```bash
+  aws configure
+  ```
+
+### 2. Deploy WordPress
+Run the playbook to provision the EC2 instance, install WordPress, and configure MySQL:
+```bash
+ansible-playbook wordpress.yml -e "@override_vars.yml"
+```
+
+### 3. Manage EC2 Lifecycle
+- **Stop the EC2 instance**:
+  ```bash
+  ansible-playbook wordpress.yml --tags stop
+  ```
+- **Start the EC2 instance**:
+  ```bash
+  ansible-playbook wordpress.yml --tags start
+  ```
+- **Delete the EC2 instance**:
+  ```bash
+  ansible-playbook wordpress.yml --tags delete
+  ```
+
+---
+
+## Directory Structure
+
+```plaintext
+.
+├── ansible.cfg
+├── override_vars.yml
+├── wordpress.yml
+├── roles
+│   ├── ec2
+│   │   ├── tasks
+│   │   └── vars
+│   ├── wordpress
+│   │   ├── tasks
+│   │   ├── templates
+│   │   └── vars
+│   ├── mysql
+│   │   ├── tasks
+│   │   ├── templates
+│   │   └── vars
+│   └── ec2_lifecycle
+│       ├── tasks
+│       └── vars
+```
+
+---
+
+## Notes
+
+- The roles are modular. For example, the MySQL role can be applied independently on any machine.
+- The EC2 role can provision different instance types by modifying variables.
+
+---
+
+## Acceptance Criteria
+
+1. Running `wordpress.yml` provisions an EC2 instance with a working WordPress site.
+2. Independent roles (e.g., MySQL role on Amazon Linux) function without issues.
+3. EC2 lifecycle actions (start, stop, delete) can be performed independently using tags.
+
+---
+

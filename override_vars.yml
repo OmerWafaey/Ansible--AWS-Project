@@ -1,0 +1,41 @@
+# General Configuration
+region: "us-east-1"
+access_key: "xxxxxxxxxxxxxxxxxxxx"
+secret_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# EC2 Lifecycle
+instance_id: "{{ lookup('file', '/home/omar/Ansible-Project/instance_ids.txt').splitlines() }}"
+
+# EC2 Variables
+key_name: "test"
+key_pub_path: "/home/omar/test.pem.pub"
+security_group_name: "omar-ansible-security-group"
+vpc_id: "vpc-0249089c438ad78f6"
+image_id: "ami-0bdac82f29714af26"
+instance_type: "t3.small"
+instance_count: 2
+subnet_id: "subnet-01fed3dfba9a59d26"
+instance_name: "omar"
+security_group_rules:
+  - proto: tcp
+    from_port: 22
+    to_port: 22
+    cidr_ip: "0.0.0.0/0"
+  - proto: tcp
+    from_port: 443
+    to_port: 443
+    cidr_ip: "0.0.0.0/0"
+  - proto: tcp
+    from_port: 80
+    to_port: 80
+    cidr_ip: "0.0.0.0/0"
+
+# Database Variables
+mysql_db: "wordpress"
+mysql_user: "admin"
+mysql_password: "omar1234"
+db_host: "localhost"
+
+# WordPress Variables
+github_repo_url: "github.com/OmerWafaey/WordPress"
+

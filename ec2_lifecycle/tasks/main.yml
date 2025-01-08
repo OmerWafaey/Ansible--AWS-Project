@@ -1,0 +1,33 @@
+# roles/ec2_manager/tasks/main.yml
+- name: Print instance id
+  tags: [ debug ] # module is used to print debug information during the execution of the playbook.
+  debug:
+    msg: "Instance id is {{ instance_id }}"
+
+- name: Start EC2 instance
+  tags: [ start ]
+  ec2_instance:
+    region: "{{ region }}"
+    access_key: "{{ access_key }}"
+    secret_key: "{{ secret_key }}"
+    instance_ids: "{{ instance_id }}"
+    
+    state: started
+
+- name: Stop EC2 instance
+  tags: [ stop ]
+  ec2_instance:
+    region: "{{ region }}"
+    access_key: "{{ access_key }}"
+    secret_key: "{{ secret_key }}"
+    instance_ids: "{{ instance_id }}"
+    state: stopped
+
+- name: Terminate EC2 instance
+  tags: [ terminate ]
+  ec2_instance:
+    region: "{{ region }}"
+    access_key: "{{ access_key }}"
+    secret_key: "{{ secret_key }}"
+    instance_ids: "{{ instance_id }}"
+    state: absent

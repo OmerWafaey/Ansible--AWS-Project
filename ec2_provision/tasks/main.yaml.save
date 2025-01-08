@@ -1,0 +1,101 @@
+---
+- name: Create SSH Key Pair
+  amazon.aws.ec2_key:
+    name: "{{ key_name }}"
+    region: "{{ region }}"
+    key_material: "{{ lookup('file', key_pub_path) }}"
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ secret_key }}"
+  tags:
+    - provision_ec2
+
+- name: Print SSH Public Key
+  debug:
+    msg: "{{ lookup('file', key_pub_path) }}"
+  tags:
+    - provision_ec2
+
+- name: Create Security Group
+  amazon.aws.ec2_group:
+    name: "{{ security_group_name }}"
+    description: "Security group with ports 22, 443, and 80 open"
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    rules: "{{ security_group_rules }}"
+  register: security_group
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ secret_key }}"
+  tags:
+    - provision_ec2    
+
+- name: Launch EC2 instance
+  amazon.aws.ec2_instance:
+    tags:
+      - provision_ec2
+    key_name: "{{ key_name }}"
+    region: "{{ region }}"
+    image:
+      id: "{{ image_id }}"
+    instance_type: "{{ instance_type }}"
+    wait: yes
+    count: "{{ instance_count }}"
+    tags:
+      Name: "{{ instance_name }}"
+    security_group: "{{ security_group.group_id }}"  
+    subnet_id: "{{ subnet_id }}"
+    network:
+      assign_public_ip: true
+  register: ec2_instance_result
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ secret_key }}"
+  tags:
+    - provision_ec2
+
+- debug:
+    var: ec2_instance_result
+  tags:
+    - provision_ec2
+
+- name: Add newly created EC2 instance to host group
+  add_host:
+    name: "{{ item.public_ip_address }}"
+    groups: tag_Name_{{ instance_name }}
+  loop: "{{ ec2_instance_result.instances }}"
+  tags:
+    - provision_ec2
+
+- debug:
+    var: ec2_instance_result
+  tags:
+    - provision_ec2
+
+- name: Add newly created EC2 instance to host group
+  add_host:
+    name: "{{ item.public_ip_address }}"
+    groups: tag_Name_omar
+  loop: "{{ ec2_instance_result.instances }}"
+  tags:
+    - provision_ec2
+
+- name: Extract public IP addresses and instance IDs
+  set_fact:
+    public_ips: "{{ ec2_instance_result.instances | map(attribute='public_ip_address') | list }}"
+    instance_ids: "{{ ec2_instance_result.instances | map(attribute='instance_id') | list }}"
+
+- name: Write instance IDs to file
+  copy:
+    content: "{{ instance_ids | join('\n') }}"
+    dest: "/home/omar/ansible-AWS-WordPress-Automation/instance_ids.txt"
+
+- name: Print instance IDs
+  debug:
+    msg: "Instance ID: {{ item }}"
+  with_items: "{{ instance_ids }}"
+
+- name: Print public IP addresses with URL
+  debug:
+    msg: "URL: http://{{ item }}"
+  with_items: "{{ public_ips }}"

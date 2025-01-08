@@ -1,0 +1,20 @@
+- name: Get EC2 instance information
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Get EC2 instances with specific tag
+      amazon.aws.ec2_instance_info:
+        region: us-east-1
+        filters:
+          instance-state-name: running
+          "tag:Name": "omar"  # Adjust the tag name as per your setup
+      register: omar_ec2_instance_result
+
+    - name: Extract public IP addresses of omar's instances
+      set_fact:
+        omar_public_ips: "{{ omar_ec2_instance_result.instances | map(attribute='public_ip_address') | list }}"
+
+    - name: Print public IP addresses of omar's instances
+      debug:
+       msg: "http://{{ item }}"
+      loop: "{{ omar_public_ips }}"

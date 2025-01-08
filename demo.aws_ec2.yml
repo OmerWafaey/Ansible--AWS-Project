@@ -1,0 +1,63 @@
+
+
+# demo.aws_ec2.yml
+plugin: amazon.aws.aws_ec2
+
+# The access key for your AWS account.
+aws_access_key: xxxxxxxxxxxxxxxxxx
+# The secret access key for your AWS account.
+aws_secret_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+regions:
+- us-east-1
+
+
+keyed_groups:
+  # add hosts to tag_Name_value groups for each aws_ec2 host's tags.Name variable.
+  - key: tags.Name
+    prefix: tag_Name_
+    separator: ""
+
+
+
+
+
+# # demo.aws_ec2.yml
+# plugin: amazon.aws.aws_ec2
+
+# # The access key for your AWS account.
+# aws_access_key: "{{ access_key }}"
+# # The secret access key for your AWS account.
+# aws_secret_key: "{{ secret_key }}"
+
+# regions:
+# - us-east-1
+
+
+# keyed_groups:
+#   # add hosts to tag_Name_value groups for each aws_ec2 host's tags.Name variable.
+#   - key: tags.Name
+#     prefix: tag_Name_
+#     separator: ""
+
+
+
+# # aws_ec2_with_vars.yml
+# plugin: amazon.aws.aws_ec2
+
+# # Include external variable file
+
+
+# # The access key for your AWS account.
+# aws_access_key: "{{ access_key }}"
+# # The secret access key for your AWS account.
+# aws_secret_key: "{{ secret_key }}"
+
+# regions:
+#   - us-east-1
+
+# keyed_groups:
+#   # add hosts to tag_Name_value groups for each aws_ec2 host's tags.Name variable.
+#   - key: tags.Name
+#     prefix: tag_Name_
+#     separator: ""

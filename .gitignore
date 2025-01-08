@@ -1,0 +1,5 @@
+*.pem
+*.key
+*.vault
+*.log
+instance_ids.txt

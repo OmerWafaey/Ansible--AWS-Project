@@ -1,0 +1,4 @@
+[ec2_instances]
+localhost ansible_connection=local
+[wordpress]
+18.212.48.157
